@@ -12,7 +12,7 @@ import Footer from "@/components/Footer";
 const NAV_HEIGHT = 80;
 
 export default function Home() {
-  const [activeSection, setActiveSection] = useState("hero");
+  const [activeSection, setActiveSection] = useState("home");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,10 +22,10 @@ export default function Home() {
       const progressBar = document.getElementById("scroll-progress");
       if (progressBar) progressBar.style.width = pct + "%";
 
-      const scrollY = window.scrollY + NAV_HEIGHT + 10;
+      const scrollY = window.scrollY + 120;
       const sections = document.querySelectorAll("header[id], section[id], footer[id]");
 
-      let current = sections[0]?.id || "hero";
+      let current = sections[0]?.id || "home";
       sections.forEach((sec) => {
         if ((sec as HTMLElement).offsetTop <= scrollY) {
           current = sec.id;
@@ -41,7 +41,6 @@ export default function Home() {
 
   return (
     <>
-      <div id="scroll-progress" className="fixed top-0 left-0 h-[3px] w-0 bg-gradient-to-r from-primary to-secondary z-[100] transition-[width] duration-100 ease-linear"></div>
       <Navbar activeSection={activeSection} />
       <Hero />
       <Summary />
