@@ -1,4 +1,8 @@
+"use client";
+
 import React from "react";
+import { motion } from "framer-motion";
+import ScrollReveal from "./ScrollReveal";
 
 // Inline custom/generic SVGs for conceptual items
 const ApiIcon = (
@@ -168,61 +172,64 @@ export default function Skills() {
   return (
     <section className="py-24 px-6 bg-slate-50/30 dark:bg-[#12181b]/20" id="skills">
       <div className="max-w-6xl mx-auto">
-        <div className="mb-16">
-          <h2 className="text-3xl font-display font-bold mb-4 text-slate-900 dark:text-white">Technical Expertise</h2>
-          <div className="h-1.5 w-20 bg-secondary rounded-full"></div>
-          <p className="text-slate-600 dark:text-slate-400 mt-4 max-w-2xl leading-relaxed">
-            A curated list of technologies, frameworks, databases, and design standards I specialize in to build premium digital solutions.
-          </p>
-        </div>
+        <ScrollReveal variant="fade-up">
+          <div className="mb-16">
+            <h2 className="text-3xl lg:text-4xl font-display font-bold mb-4 text-slate-900 dark:text-white">Technical Expertise</h2>
+            <div className="h-1.5 w-20 bg-secondary rounded-full"></div>
+            <p className="text-slate-600 dark:text-slate-400 mt-4 max-w-2xl leading-relaxed">
+              A curated list of technologies, frameworks, databases, and design standards I specialize in to build premium digital solutions.
+            </p>
+          </div>
+        </ScrollReveal>
 
         <div className="flex flex-col gap-6">
           {skillCategories.map((cat, i) => (
-            <div
-              key={i}
-              className="flex flex-col md:flex-row gap-6 md:gap-12 p-8 rounded-3xl bg-white dark:bg-surface-dark border border-slate-200/80 dark:border-slate-800/80 shadow-xs transition-all duration-300 hover:shadow-sm hover-lift"
-            >
-              {/* Left Side: Category Info */}
-              <div className="md:w-1/4 flex-shrink-0">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className={`material-symbols-outlined text-3xl ${cat.cls}`}>{cat.tag}</span>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-none">{cat.title}</h3>
+            <ScrollReveal key={i} variant="fade-up" delay={i * 0.1}>
+              <div className="flex flex-col md:flex-row gap-6 md:gap-12 p-8 rounded-3xl bg-white dark:bg-surface-dark border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-lg hover:border-secondary/30 transition-all duration-500 hover-lift group">
+                {/* Left Side: Category Info */}
+                <div className="md:w-1/4 flex-shrink-0">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className={`material-symbols-outlined text-3xl ${cat.cls} group-hover:scale-110 transition-transform duration-300`}>{cat.tag}</span>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-none">{cat.title}</h3>
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                    {cat.desc}
+                  </p>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                  {cat.desc}
-                </p>
-              </div>
 
-              {/* Right Side: Skill Tags Row */}
-              <div className="flex-1 flex items-center">
-                <div className="flex flex-wrap gap-3">
-                  {cat.items.map((item, j) => (
-                    <div
-                      key={j}
-                      className="group/item relative flex items-center gap-3 p-3 rounded-2xl bg-slate-50/70 dark:bg-slate-800/40 border border-slate-100/50 dark:border-slate-800/60 hover:border-slate-200 dark:hover:border-slate-700/80 transition-all duration-300 hover:shadow-xs cursor-default hover:-translate-y-0.5"
-                      style={{
-                        "--item-brand-color": item.color
-                      } as React.CSSProperties}
-                    >
-                      <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xs transition-transform duration-300 group-hover/item:scale-110 flex-shrink-0 overflow-hidden">
-                        {typeof item.icon === "string" ? (
-                          <img
-                            src={item.icon}
-                            alt={item.name}
-                            className={`w-5 h-5 object-contain transition-transform duration-300 group-hover/item:scale-110 flex-shrink-0 ${item.invertDark ? "dark:invert dark:brightness-200" : ""}`}
-                          />
-                        ) : (
-                          item.icon
-                        )}
-                      </div>
-                      <span className="text-xs font-bold text-slate-800 dark:text-slate-200 whitespace-nowrap">{item.name}</span>
-                      {/* Underline color highlight on hover */}
-                      <div className="absolute bottom-0 left-4 right-4 h-[2px] bg-[var(--item-brand-color)] rounded-full w-0 group-hover/item:w-[calc(100%-2rem)] transition-all duration-300"></div>
-                    </div>
-                  ))}
+                {/* Right Side: Skill Tags Row */}
+                <div className="flex-1 flex items-center">
+                  <div className="flex flex-wrap gap-3">
+                    {cat.items.map((item, j) => (
+                      <motion.div
+                        key={j}
+                        whileHover={{ y: -3, scale: 1.03 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                        className="group/item relative flex items-center gap-3 p-3 rounded-2xl bg-slate-50/70 dark:bg-slate-800/40 border border-slate-100/50 dark:border-slate-800/60 hover:border-slate-200 dark:hover:border-slate-700/80 transition-all duration-300 hover:shadow-xs cursor-default overflow-hidden"
+                        style={{
+                          "--item-brand-color": item.color
+                        } as React.CSSProperties}
+                      >
+                        <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-xs transition-transform duration-300 group-hover/item:scale-110 flex-shrink-0 overflow-hidden">
+                          {typeof item.icon === "string" ? (
+                            <img
+                              src={item.icon}
+                              alt={item.name}
+                              className={`w-5 h-5 object-contain transition-transform duration-300 group-hover/item:scale-110 flex-shrink-0 ${item.invertDark ? "dark:invert dark:brightness-200" : ""}`}
+                            />
+                          ) : (
+                            item.icon
+                          )}
+                        </div>
+                        <span className="text-xs font-bold text-slate-800 dark:text-slate-200 whitespace-nowrap">{item.name}</span>
+                        {/* Underline color highlight on hover */}
+                        <div className="absolute bottom-0 left-4 right-4 h-[2px] bg-[var(--item-brand-color)] rounded-full w-0 group-hover/item:w-[calc(100%-2rem)] transition-all duration-300"></div>
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

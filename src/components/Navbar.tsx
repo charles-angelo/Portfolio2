@@ -2,6 +2,7 @@
 
 import { useTheme } from "next-themes";
 import { MouseEvent, useEffect, useState } from "react";
+import { useLenis } from "./SmoothScroll";
 
 interface NavItem {
   id: string;
@@ -21,12 +22,13 @@ export default function Navbar({ activeSection }: { activeSection: string }) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [showCaBadge, setShowCaBadge] = useState(false);
+  const lenis = useLenis();
 
   useEffect(() => {
     setMounted(true);
 
     const handleScroll = () => {
-      // Morph into CA. badge when Charles Angelo heading is vacuumed in
+      // Morph into CA. badge when Charles Angelo heading is scrolled past
       setShowCaBadge(window.scrollY > 120);
     };
 
@@ -42,7 +44,7 @@ export default function Navbar({ activeSection }: { activeSection: string }) {
     const target = document.getElementById(targetId);
     if (!target) return;
 
-    // Ripple effect
+    // Ripple effect on click
     const btn = e.currentTarget;
     const rect = btn.getBoundingClientRect();
     const size = Math.max(rect.width, rect.height);
@@ -58,13 +60,18 @@ export default function Navbar({ activeSection }: { activeSection: string }) {
     btn.appendChild(ripple);
     ripple.addEventListener("animationend", () => ripple.remove());
 
-    const top = target.getBoundingClientRect().top + window.scrollY - 30;
-    window.scrollTo({ top, behavior: "smooth" });
+    // Lenis smooth scroll or fallback
+    if (lenis) {
+      lenis.scrollTo(`#${targetId}`, { offset: -30, duration: 1.2 });
+    } else {
+      const top = target.getBoundingClientRect().top + window.scrollY - 30;
+      window.scrollTo({ top, behavior: "smooth" });
+    }
 
     setTimeout(() => {
       target.classList.add("section-highlight");
       target.addEventListener("animationend", () => target.classList.remove("section-highlight"), { once: true });
-    }, 500);
+    }, 600);
   };
 
   return (
@@ -73,7 +80,7 @@ export default function Navbar({ activeSection }: { activeSection: string }) {
       <aside className="hidden md:flex fixed left-5 lg:left-8 top-1/2 -translate-y-1/2 z-50 flex-col items-center justify-center">
         <div className="w-[70px] py-6 px-3 rounded-[32px] bg-white/85 dark:bg-[#182026]/85 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xl shadow-slate-900/10 dark:shadow-black/60 flex flex-col items-center justify-center gap-3 text-center transition-all duration-500">
 
-          {/* Animated CA. Brand Badge (Springs in when "Charles Angelo" scrolls out) */}
+          {/* Animated CA. Brand Badge */}
           <div
             id="navbar-ca-target"
             className={`flex flex-col items-center justify-center transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${showCaBadge
@@ -123,47 +130,6 @@ export default function Navbar({ activeSection }: { activeSection: string }) {
           })}
 
           <div className="w-8 h-[1px] bg-slate-200 dark:bg-slate-800/80 my-0.5" />
-
-          {/* Vertical Sliding Theme Switcher */}
-          <button
-            onClick={() => setTheme(isDark ? "light" : "dark")}
-            className="relative flex flex-col items-center justify-between w-8 h-14 rounded-full bg-slate-200/80 dark:bg-slate-900/80 p-1 border border-slate-300/80 dark:border-slate-700/80 cursor-pointer transition-colors duration-300 group shadow-inner my-1"
-            aria-label="Toggle Theme"
-          >
-            {/* Sun Icon (Top) */}
-            <span
-              className={`material-symbols-outlined text-[13px] leading-none transition-colors duration-300 mt-0.5 ${!isDark ? "text-amber-500 opacity-90" : "text-slate-400 dark:text-slate-600 opacity-40"
-                }`}
-            >
-              light_mode
-            </span>
-
-            {/* Moon Icon (Bottom) */}
-            <span
-              className={`material-symbols-outlined text-[13px] leading-none transition-colors duration-300 mb-0.5 ${isDark ? "text-indigo-400 opacity-90" : "text-slate-400 dark:text-slate-600 opacity-40"
-                }`}
-            >
-              dark_mode
-            </span>
-
-            {/* Sliding Handle / Thumb */}
-            <div
-              className={`absolute left-1 top-1 w-6 h-6 rounded-full bg-white dark:bg-slate-800 shadow-md border border-slate-200/90 dark:border-slate-700/90 flex items-center justify-center transition-transform duration-300 ease-out transform ${isDark ? "translate-y-[24px]" : "translate-y-0"
-                }`}
-            >
-              <span
-                className={`material-symbols-outlined text-[14px] leading-none transition-colors duration-300 ${isDark ? "text-indigo-400" : "text-amber-500"
-                  }`}
-              >
-                {isDark ? "dark_mode" : "light_mode"}
-              </span>
-            </div>
-
-            {/* Tooltip */}
-            <span className="absolute left-full ml-3.5 px-3 py-1.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold whitespace-nowrap shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 transition-all duration-200 translate-x-1 group-hover:translate-x-0 z-50">
-              {isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-            </span>
-          </button>
         </div>
       </aside>
 
@@ -199,6 +165,3 @@ export default function Navbar({ activeSection }: { activeSection: string }) {
     </>
   );
 }
-
-
-

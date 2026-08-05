@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLenis } from "./SmoothScroll";
+import ScrollReveal from "./ScrollReveal";
 
 interface ExperienceItem {
   role: string;
@@ -60,6 +62,7 @@ export default function Experience() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const lenis = useLenis();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -71,10 +74,10 @@ export default function Experience() {
       const totalHeight = rect.height;
       const startPoint = windowHeight * 0.75;
       const currentScroll = startPoint - rect.top;
-      const progress = Math.min(Math.max(currentScroll / (totalHeight - 100), 0), 1);
+      const progress = Math.min(Math.max(currentScroll / (totalHeight - 50), 0), 1);
 
       setScrollProgress(progress);
-      if (rect.top <= windowHeight * 0.8) {
+      if (rect.top <= windowHeight * 0.85) {
         setIsVisible(true);
       }
     };
@@ -92,49 +95,52 @@ export default function Experience() {
     >
       <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="mb-16">
-          <h2 className="text-3xl lg:text-4xl font-display font-bold text-slate-900 dark:text-white mb-4">
-            Work Experience
-          </h2>
-          <div className="h-1.5 w-20 bg-secondary rounded-full"></div>
-          <p className="text-slate-600 dark:text-slate-400 mt-4 max-w-xl text-sm md:text-base leading-relaxed">
-            My professional career path, enterprise project contributions, and full-stack development experience.
-          </p>
-        </div>
+        <ScrollReveal variant="fade-up">
+          <div className="mb-16">
+            <h2 className="text-3xl lg:text-4xl font-display font-bold text-slate-900 dark:text-white mb-4">
+              Work Experience
+            </h2>
+            <div className="h-1.5 w-20 bg-secondary rounded-full"></div>
+            <p className="text-slate-600 dark:text-slate-400 mt-4 max-w-xl text-sm md:text-base leading-relaxed">
+              My professional career path, enterprise project contributions, and full-stack development experience.
+            </p>
+          </div>
+        </ScrollReveal>
 
-        {/* Timeline */}
+        {/* Timeline Container */}
         <div className="relative pl-12 md:pl-16 flex flex-col gap-12">
           {/* Background Track Line */}
           <div className="absolute left-4 md:left-5 top-6 bottom-6 w-1 bg-slate-200 dark:bg-slate-800 rounded-full" />
 
           {/* Animated Scroll Progress Laser Line */}
           <div
-            className="absolute left-4 md:left-5 top-6 w-1 bg-gradient-to-b from-secondary via-accent-leaf to-primary rounded-full transition-all duration-300 ease-out shadow-[0_0_12px_#94a684]"
+            className="absolute left-4 md:left-5 top-6 w-1 bg-gradient-to-b from-secondary via-accent-leaf to-primary rounded-full transition-all duration-200 ease-out shadow-[0_0_12px_#94a684]"
             style={{
-              height: isVisible ? `${Math.max(scrollProgress * 100, 15)}%` : "0%",
+              height: isVisible ? `${Math.max(scrollProgress * 100, 10)}%` : "0%",
             }}
           >
             {/* Glowing Traveling Head */}
-            <div className="absolute -bottom-1 -left-1 w-3 h-3 rounded-full bg-white ring-4 ring-secondary/80 shadow-[0_0_16px_#94a684] animate-pulse" />
+            <div className="absolute -bottom-1.5 -left-1 w-3.5 h-3.5 rounded-full bg-white ring-4 ring-secondary shadow-[0_0_16px_#94a684] animate-pulse" />
           </div>
 
           {EXPERIENCES.map((exp, index) => {
-            const nodeProgress = (index + 0.5) / EXPERIENCES.length;
+            const nodeProgress = (index + 0.3) / EXPERIENCES.length;
             const isReached = scrollProgress >= nodeProgress || (index === 0 && isVisible);
 
             return (
-              <div
+              <ScrollReveal
                 key={index}
-                className={`relative transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-                  }`}
-                style={{ transitionDelay: `${index * 200}ms` }}
+                variant="fade-up"
+                delay={index * 0.15}
+                className="relative"
               >
                 {/* Node Icon Badge */}
                 <div
-                  className={`absolute -left-12 md:-left-16 top-1.5 w-9 h-9 md:w-11 md:h-11 rounded-2xl border-2 flex items-center justify-center transition-all duration-500 z-10 ${isReached
-                    ? "bg-white dark:bg-surface-dark border-secondary text-secondary shadow-lg shadow-secondary/30 scale-110 ring-4 ring-secondary/10"
-                    : "bg-slate-100 dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-400"
-                    }`}
+                  className={`absolute -left-12 md:-left-16 top-1.5 w-9 h-9 md:w-11 md:h-11 rounded-2xl border-2 flex items-center justify-center transition-all duration-500 z-10 ${
+                    isReached
+                      ? "bg-white dark:bg-surface-dark border-secondary text-secondary shadow-lg shadow-secondary/30 scale-110 ring-4 ring-secondary/10"
+                      : "bg-slate-100 dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-400"
+                  }`}
                 >
                   <span className="material-symbols-outlined text-[18px] md:text-[22px] leading-none">
                     {exp.icon}
@@ -142,7 +148,7 @@ export default function Experience() {
                 </div>
 
                 {/* Card Container */}
-                <div className="p-6 md:p-8 rounded-3xl bg-white dark:bg-surface-dark border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md hover:border-secondary/40 transition-all duration-300 group">
+                <div className="p-6 md:p-8 rounded-3xl bg-white dark:bg-surface-dark border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-xl hover:border-secondary/40 transition-all duration-300 group hover-lift">
                   <div className="flex flex-wrap justify-between items-start gap-4 mb-4">
                     <div>
                       <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white group-hover:text-secondary transition-colors">
@@ -154,10 +160,11 @@ export default function Experience() {
                     </div>
 
                     <span
-                      className={`px-4 py-1.5 rounded-full text-xs font-bold border transition-all ${exp.current
-                        ? "bg-secondary/10 text-secondary border-secondary/30 shadow-xs"
-                        : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700"
-                        }`}
+                      className={`px-4 py-1.5 rounded-full text-xs font-bold border transition-all ${
+                        exp.current
+                          ? "bg-secondary/10 text-secondary border-secondary/30 shadow-xs ring-2 ring-secondary/20"
+                          : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700"
+                      }`}
                     >
                       {exp.period}
                     </span>
@@ -189,9 +196,10 @@ export default function Experience() {
                               href={proj.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-secondary dark:hover:text-secondary hover:border-secondary transition-all hover:-translate-y-0.5"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-secondary dark:hover:text-secondary hover:border-secondary transition-all hover:-translate-y-0.5 shadow-xs"
                             >
                               <span>{proj.name}</span>
+                              <span className="material-symbols-outlined text-xs">open_in_new</span>
                             </a>
                           ) : (
                             <span
@@ -206,7 +214,7 @@ export default function Experience() {
                     </div>
                   )}
                 </div>
-              </div>
+              </ScrollReveal>
             );
           })}
         </div>
@@ -214,5 +222,3 @@ export default function Experience() {
     </section>
   );
 }
-
-
